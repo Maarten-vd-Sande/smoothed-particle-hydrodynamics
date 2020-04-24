@@ -22,6 +22,10 @@ class SpatialHash:
     def neighbours(self, coords):
         location = self.coords_to_index(coords)
         for dx, dy in itertools.product(range(-1, 2), range(-1, 2)):
+            if location[0] + dx >= len(self.cells) or location[1] + dy >= len(self.cells[location[0] + dx]):
+                if node is not None:
+                    node = node.next
+                continue
             node = self.cells[location[0] + dx][location[1] + dy].next
             while node is not None:
                 yield node.id

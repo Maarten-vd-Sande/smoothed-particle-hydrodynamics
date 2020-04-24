@@ -11,8 +11,10 @@ from matplotlib import animation
 n = 1000
 width = 400
 height = 400
-xlim = [40, width - 40]
-ylim = [40, height - 40]
+edge = 5
+xlim = [edge, width - edge]
+ylim = [edge, height - edge]
+
 
 # set the particle params
 mass = 1
@@ -34,10 +36,15 @@ hashmap = SpatialHash(width, height, h)
 
 # set-up a dam-break scenario
 i = 0
-for y in range(ylim[0], ylim[1]-100, h):
-    for x in range(xlim[0] + 100, xlim[1]-50, h):
+dam_ylim = (ylim[0], ylim[1] - 1)
+dam_xlim = (int((xlim[1] - xlim[0]) * 0.3), int((xlim[1] - xlim[0]) * 0.8))
+if n > ((dam_ylim[1] - dam_ylim[0]) // h) * ((dam_xlim[1] - dam_xlim[0]) // h):
+    raise ValueError("reduce the number of points (n) or reduce the kernel radius (h)")
+
+for y in range(*dam_ylim, h):
+    for x in range(*dam_xlim, h):
         if i < n:
-            xy[i] = x + np.random.normal(0, 0.25), y + np.random.normal(0, 0.25)
+            xy[i] = x + np.random.uniform(0, h * 0.1), y + np.random.uniform(0, h * 0.1)
             hashmap.move(i, xy[i])
         i += 1
     pass
